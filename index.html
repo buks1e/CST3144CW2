@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>After School Club</title>
+        <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="app">
+            <header>
+                <h1 v-text="sitename" style="text-align: center;"></h1>
+                <button v-if="cartItemCount != '' || showProduct == false" v-on:click="showCheckout">
+                    {{ cartItemCount }}
+                    <span class="fas fa-cart-plus"></span> 
+                    Checkout
+                </button>
+                <button v-else disabled>
+                    <span class="fas fa-cart-plus"></span> 
+                    Checkout
+                </button>
+                <input type="search" v-if="showProduct" v-model.trim="Query" v-on:input="findQuery" placeholder="Search">
+                <input type="search" v-else disabled placeholder="Search">
+            </header>
+
+            <div v-if="showProduct">
+                <div class="prodPage" style="width: 10%;position: sticky;left: 0%;">
+                    <h2>Sort By</h3>
+                    <p><input type="radio" value="0" v-model="sortSetting">Name</p>
+                    <p><input type="radio" value="1" v-model="sortSetting">Location</p>
+                    <p><input type="radio" value="2" v-model="sortSetting">Price</p>
+                    <p><input type="radio" value="3" v-model="sortSetting">Availability</p>
+                    <h2>Sort Order</h3>
+                    <p><input type="radio" value="1" v-model="sortOrder">Ascending</p> 
+                    <p><input type="radio" value="-1" v-model="sortOrder">Descending</p>
+                </div>
+
+                <div class="prodPage" v-if="emptySearch">
+                    <h2 style="text-align: center;">There are no results matching your query</h2>
+                </div>
+
+                <div class="prodPage">
+                    <div style="display: inline-flex;flex-flow:wrap;">
+                        <div class="items" v-for="club in sortedClubs">
+                            <img v-bind:src="`${hostLink}/image/${club.image}`" v-bind:alt="club.alt" style="height: 125px; width: 125px; display: inline-block;">
+                            <div class="info" style="display: inline-block;">
+                                <h2 v-text="club.subject"></h2>
+                                <p>Location: {{club.location}}</p>
+                                <p>Price: {{club.price}}</p>
+                                <p>Spaces: {{club.availableSlots}}</p>
+                                <p>
+                                    <span v-for="n in club.rating">★</span>
+                                    <span v-for="n in 5 - club.rating">☆</span>
+                                </p>
+                            </div>
+                            <button v-on:click="addCart(club)" v-if="canAddToCart(club)">Add to Cart</button>
+                            <button disabled="disabled" v-else>Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else>
+                <h2>Cart Items</h2>
+                <div style="display: inline-flex;align-items: flex-end;margin: 1%;" v-for="club in cartDisplay">
+                    <img v-bind:src="`${hostLink}/image/${club.image}`" v-bind:alt="club.alt" style="height: 125px; width: 125px; display: inline-block;">
+                    <div style="display: inline-block;">
+                        <h2 v-text="club.subject"></h2>
+                        <p>Location: {{club.location}}</p>
+                        <p>Price: {{club.price}}</p>
+                        <p>Spaces reserved: {{club.count}}</p >
+                    </div>
+                    <div style="display: flex;flex-direction: column;align-items: center;">
+                        <input type="number" min="1" max="9" value="1" v-on:input="setMax($event, club)">
+                        <button v-on:click="removeFromCart($event,club)">Remove from Cart</button>
+                        <p></p>
+                    </div>
+                </div>
+                <div v-if="cartItemCount == ''"><p>Cart is Empty</p></div>
+                <h2>Checkout</h2>
+                <p>
+                    <strong>First Name:</strong>
+                    <input v-model.trim="order.firstName">
+                </p>
+                <p>
+                    <strong>Last Name:</strong>
+                    <input v-model.trim="order.lastName">
+                </p>
+                <p><strong>Phone Number:</strong> <input v-model.number="order.phone"></p>
+                    <strong>Emirate:</strong>
+                    <select v-model="order.emirate">
+                        <option disabled>--Emirate--</option>
+                        <option v-for="(emirate, key) in emirates" v-bind:value="emirate">{{emirate}}</option>
+                    </select>
+                </p>
+
+                <h2>Order Information</h2>
+                <p>First Name: {{order.firstName}}</p>
+                <p>Last Name: {{order.lastName}}</p>
+                <p>Phone Number: {{order.phone}}</p>
+                <p>Emirate: {{order.emirate}}</p>
+
+                <button v-if="cartItemCount != '' && valueCheck" v-on:click="submitForm">Place Order</button>
+                <button v-else disabled v-on:click="submitForm">Place Order</button>
+            </div>
+        </div>
+        <script src="vue.js"></script>
+    </body>
+</html>

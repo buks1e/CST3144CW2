@@ -1,0 +1,27 @@
+.prodPage{
+    display: table-cell;
+
+}
+.items{
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: flex-end;
+    width: 33%;
+}
+button, header input{
+    border: 1px solid;
+    border-radius: 20px;
+    padding: 5px;
+    padding-inline: 10px;
+}
+header{
+    position: sticky;
+    top: 0%;
+    background-color: white;
+}
+header input{
+    position: sticky;
+    left: 100%;
+}
