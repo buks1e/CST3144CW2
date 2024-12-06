@@ -93,6 +93,9 @@
                         });
                         
                         alert('Order Placed');
+
+                        this.cart = [];
+                        this.showCheckout();
                     },
 
                     canAddToCart: function(club){
